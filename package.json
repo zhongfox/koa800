@@ -8,7 +8,7 @@
   "description": "configurable koa wrapper",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/.bin/mocha --recursive"
   },
   "repository": {
     "type": "git",
