@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -v "^test\|^node_modules\|^public/assets\|^app/assets" | grep ".js$")
+
+if [ "$files" = "" ]; then
+  exit 0
+fi
+
+PARENT_COMMAND="$(ps -o args= $PPID)" #获得父命令以及参数, 目的是检测提交message中是否指示跳过jshint验证
+if [[ $PARENT_COMMAND == *escape_jshint* ]]; then #特殊用途!!! 如合并代码
+  exit 0
+fi
+
+if ! [ -f ./node_modules/.bin/eslint ]; then
+  echo "项目未安装eslint"
+  exit 0 # 只提示, 不强制
+fi
+
+echo "执行eslint..."
+(./node_modules/.bin/eslint ${files}) 2>&1
+exit 0 # 只提示, 不强制
