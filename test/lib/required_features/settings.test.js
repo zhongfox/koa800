@@ -3,10 +3,47 @@
 let expect = require('chai').expect;
 let env = require('../../env');
 let path = require('path');
-let app;
 
 describe('settings feature', function() {
+  beforeEach(function() {
+    env.Feature.features = null; // 重新加载
+    env.Feature.optional = {};
+  });
+
+  describe('make_scaffold ', function() {
+    let scaffoldMaker;
+    beforeEach(function() {
+      scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
+    });
+
+    it('should copy scaffold', function(done) {
+      let scaffold = [
+        'config/',
+        'config/settings.js',
+        'config/environments/',
+        'config/environments/development.js',
+        'config/environments/production.js',
+      ];
+      let scaffoldPaths = scaffold.map(scaffold => {
+        return path.join(env.testScaffoldRoot, scaffold);
+      });
+
+      scaffoldMaker.make().then(function() {
+        env.isAllExists(scaffoldPaths).then(function(allExists) {
+          allExists ? done() : done(new Error('copy scaffold faild'));
+        });
+      });
+    });
+
+    afterEach(function() {
+      require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
+      require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
+    });
+
+  });
+
   describe('#enhance', function() {
+    let app;
     beforeEach(function() {
       app = require(env.koa800Root)(env.testAppRoot);
     });
@@ -26,38 +63,12 @@ describe('settings feature', function() {
 
     it('config/environments/{app.env} should be third priority when production', function() {
       app.env = 'production';
-      require('../../../lib/required_features/settings').enhance(); // 需要重新装载
+      require('../../../lib/required_features/settings').enhance(app); // 需要重新装载
       expect(app.settings.testkey3).to.equal('testkey3 in config/environments/production.js');
     });
 
     it('config/settings.js should be last priority', function() {
       expect(app.settings.testkey4).to.equal('testkey4 in config/settings.js');
-    });
-  });
-
-  describe('#scaffold', function() {
-    it('should copy scaffold', function(done) {
-      let scaffold = [
-        'config/',
-        'config/settings.js',
-        'config/environments/',
-        'config/environments/development.js',
-        'config/environments/production.js',
-      ];
-      let scaffoldPaths = scaffold.map(scaffold => {
-        return path.join(env.testScaffoldRoot, scaffold);
-      });
-
-      env.Feature.makeScaffold(env.testScaffoldRoot).then(function() {
-        env.isAllExists(scaffoldPaths).then(function(allExists) {
-          allExists ? done() : done(new Error('copy scaffold faild'));
-        });
-      });
-    });
-
-    after(function() { // TODO
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
     });
   });
 });
