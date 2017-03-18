@@ -46,6 +46,6 @@
     "co-redis": "^2.1.0",
     "co-memcached": "^1.0.1",
     "ioredis": "^1.15.1",
-    "tingyun": "1.1.14"
+    "tingyun": "1.4.1"
   }
 }
