@@ -16,6 +16,11 @@ describe('eslint feature', function() {
     let scaffoldMaker;
     beforeEach(function() {
       scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
+
+      // only for update
+      let eslintFeature = require(path.join(env.koa800Root, 'lib/optional_features/eslint.js'));
+      sinon.stub(scaffoldMaker, 'getUpdate').returns({eslint: eslintFeature.update(env.testScaffoldRoot)});
+      sinon.stub(env.Feature, 'gitHooksDir').returns(fakeGitHooksDir);
     });
 
     it('should contain devDependencies eslint', function() {
@@ -24,11 +29,7 @@ describe('eslint feature', function() {
       // TODO
     });
 
-    it('.git/hooks/pre-commit should symbol link to bin/pre-commit', sinon.test(function(done) {
-      let eslintFeature = require(path.join(env.koa800Root, 'lib/optional_features/eslint.js'));
-      this.stub(scaffoldMaker, 'getUpdate').returns({eslint: eslintFeature.update(env.testScaffoldRoot)});
-      this.stub(env.Feature, 'gitHooksDir').returns(fakeGitHooksDir);
-
+    it('.git/hooks/pre-commit should symbol link to bin/pre-commit', function(done) {
       scaffoldMaker.make().then(function() {
         require('fs').readlink(path.join(env.testScaffoldRoot, `${fakeGitHooksDir}/pre-commit`), function(err, target) {
           if (err) return done(err);
@@ -36,12 +37,14 @@ describe('eslint feature', function() {
           done();
         });
       });
-    }));
+    });
 
     afterEach(function() { // TODO
       require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
       require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
       require('rimraf').sync(path.join(env.testScaffoldRoot, `${fakeGitHooksDir}/pre-commit`));
+      scaffoldMaker.getUpdate.restore();
+      env.Feature.gitHooksDir.restore();
     });
   });
 });

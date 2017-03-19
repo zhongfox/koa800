@@ -63,7 +63,7 @@ describe('tingyun feature', function() {
     it('app.monitor.noticeError should turn string to error', function() {
       let errorMessage = 'fake error';
       app.monitor.noticeError(errorMessage);
-      expect(tingyun.noticeError.calledWith(new Error(errorMessage), '')).to.be.true;
+      expect(tingyun.noticeError.calledWith(sinon.match.instanceOf(Error), '')).to.be.true;
     });
 
     it('app.monitor.noticeError should stringify customParamters', function() {

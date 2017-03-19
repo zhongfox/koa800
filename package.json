@@ -2,7 +2,7 @@
   "name": "koa800",
   "bin": {
     "koa800": "./bin/console.js",
-    "update": "./bin/update.js"
+    "make_scaffold": "./bin/make_scaffold.js"
   },
   "version": "1.0.0",
   "description": "configurable koa wrapper",
@@ -37,8 +37,7 @@
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "rimraf": "^2.6.1",
-    "sinon": "^1.17.7",
-    "sinon-chai": "^2.8.0",
+    "sinon": "^2.0.0",
 
     "koa-safe-jsonp": "^0.3.1",
     "co": "^4.6.0",

@@ -46,8 +46,9 @@ describe('start_hooks feature', function() {
 
         sinon.spy(console, 'error');
         app.beforeStart(promiseA).beforeStart(promiseB).start().then(function() {
-          done();
           expect(console.error.calledWith('执行app.beforeStart时出现错误, app启动失败: Im fail')).to.be.true;
+          console.error.restore();
+          done();
         });
       });
     });
