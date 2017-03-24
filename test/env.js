@@ -5,8 +5,8 @@ let env = {};
 env.koa800Root       = path.join(__dirname, '..');
 env.testAppRoot      = path.join(__dirname, '../test/test_app');
 env.testScaffoldRoot = path.join(__dirname, '../test/test_scaffold');
+env.Project          = require(path.join(env.koa800Root, 'lib/project'));
 env.Feature          = require(path.join(env.koa800Root, 'lib/feature'));
-env.ScaffoldMaker    = require(path.join(env.koa800Root, 'lib/scaffold_maker'));
 
 env.isAllExists = function(fileList) {
   let allExists = true;

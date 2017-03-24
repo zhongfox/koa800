@@ -1,29 +1,33 @@
 'use strict';
 
 let expect = require('chai').expect;
+let sinon = require('sinon');
 let env = require('../../env');
 
+let project;
+let app;
+// let targetFeature;
+
 describe('memcached feature', function() {
-  beforeEach(function() {
-    env.Feature.features = null; // 强制重新加载
-    env.Feature.optional = {memcached: true};
+  before(function() {
+    sinon.stub(env.Project.prototype, 'getKoa800Config').returns({memcached: true});
+  });
+  after(function() {
+    env.Project.prototype.getKoa800Config.restore();
   });
 
-  describe('make_scaffold ', function() {
-    let scaffoldMaker;
+  describe('#setup ', function() {
     beforeEach(function() {
-      scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
+      project = new env.Project(env.testScaffoldRoot);
     });
 
     it('should contain dependencies co-memcache', function() {
-      let scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
-      let packageJson = scaffoldMaker.getPackageJson();
+      let packageJson = project.scaffoldGenerator.getPackageJson();
       expect(packageJson.dependencies).to.have.property('co-memcached');
     });
   });
 
-  describe('#enhance', function() {
-    let app;
+  describe('#run', function() {
     beforeEach(function() {
       app = require(env.koa800Root)(env.testAppRoot);
     });

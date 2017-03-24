@@ -5,14 +5,12 @@ let sinon = require('sinon');
 let expect = chai.expect;
 let env = require('../../env');
 
-describe('start_hooks feature', function() {
-  beforeEach(function() {
-    env.Feature.features = null; // 重新加载
-    env.Feature.optional = {};
-  });
+let app;
+// let project;
+// let targetFeature;
 
-  describe('#enhance', function() {
-    let app;
+describe('start_hooks feature', function() {
+  describe('#run', function() {
     beforeEach(function() {
       app = require(env.koa800Root)(env.testAppRoot);
     });

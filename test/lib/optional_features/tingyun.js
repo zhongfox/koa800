@@ -6,43 +6,48 @@ let sinon = require('sinon');
 let path = require('path');
 let tingyunConfigFile = path.join(env.testScaffoldRoot, 'tingyun.json.example');
 
+let project;
+let app;
+// let targetFeature;
+
 describe('tingyun feature', function() {
-  beforeEach(function() {
-    env.Feature.features = null; // 重新加载
-    env.Feature.optional = { tingyun: true };
+  before(function() {
+    sinon.stub(env.Project.prototype, 'getKoa800Config').returns({tingyun: true});
+  });
+  after(function() {
+    env.Project.prototype.getKoa800Config.restore();
   });
 
-  describe('make_scaffold ', function() {
-    let scaffoldMaker;
+  describe('#setup', function() {
     beforeEach(function() {
-      scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
+      project = new env.Project(env.testScaffoldRoot);
     });
 
     it('packageJson should contain dependencies tingyun', function() {
-      let packageJson = scaffoldMaker.getPackageJson();
+      let packageJson = project.scaffoldGenerator.getPackageJson();
       expect(packageJson.dependencies).to.have.property('tingyun');
     });
 
     it('should copy scaffold and set default app_name', function(done) {
-      scaffoldMaker.make().then(function() {
+      project.setup().then(function() {
         require('fs').readFile(tingyunConfigFile, function(error, content) {
           if (error) return done(error);
           let config = JSON.parse(content);
-          expect(config.app_name).to.eql(['test_scaffold']);
+          expect(config.app_name).to.include('test_scaffold');
           done();
         });
       });
     });
 
-    afterEach(function() {
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
+    afterEach(function() { // TODO
+      project.getFeature('base').scaffold.forEach(scaffold => {
+        require('rimraf').sync(path.join(env.testScaffoldRoot, scaffold));
+      });
       require('rimraf').sync(tingyunConfigFile);
     });
   });
 
-  describe('#enhance', function() {
-    let app;
+  describe('#run', function() {
     let tingyun;
     before(function() {
       process.env.TINGYUN_HOME = env.testAppRoot;

@@ -4,23 +4,23 @@ require('chai').should();
 let path = require('path');
 let env = require('../../env');
 
+let project;
+let app;
+let targetFeature;
+
 describe('base feature', function() {
-  beforeEach(function() {
-    env.Feature.features = null; // 重新加载
-    env.Feature.optional = {};
-  });
-  describe('make_scaffold ', function() {
-    let scaffoldMaker;
+  describe('setup', function() {
     beforeEach(function() {
-      scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
+      project = new env.Project(env.testScaffoldRoot);
+      targetFeature = project.getFeature('base');
     });
 
     it('should copy scaffold', function(done) {
-      let scaffoldPaths = ['app', 'config'].map(scaffold => {
+      let scaffoldPaths = targetFeature.scaffold.map(scaffold => {
         return path.join(env.testScaffoldRoot, scaffold);
       });
 
-      scaffoldMaker.make().then(function() {
+      project.setup().then(function() {
         env.isAllExists(scaffoldPaths).then(function(allExists) {
           allExists ? done() : done(new Error('copy scaffold faild'));
         });
@@ -28,13 +28,15 @@ describe('base feature', function() {
     });
 
     afterEach(function() {
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
+      targetFeature.scaffold.forEach(scaffold => {
+        require('rimraf').sync(path.join(env.testScaffoldRoot, scaffold));
+      });
+      // require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
+      // require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
     });
   });
 
-  describe('#enhance', function() {
-    let app;
+  describe('#run', function() {
     beforeEach(function() {
       app = require(env.koa800Root)(env.testAppRoot);
     });

@@ -4,31 +4,23 @@ let expect = require('chai').expect;
 let env = require('../../env');
 let path = require('path');
 
-describe('settings feature', function() {
-  beforeEach(function() {
-    env.Feature.features = null; // 重新加载
-    env.Feature.optional = {};
-  });
+let project;
+let app;
+let targetFeature;
 
-  describe('make_scaffold ', function() {
-    let scaffoldMaker;
+describe('settings feature', function() {
+  describe('setup ', function() {
     beforeEach(function() {
-      scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
+      project = new env.Project(env.testScaffoldRoot);
+      targetFeature = project.getFeature('settings');
     });
 
     it('should copy scaffold', function(done) {
-      let scaffold = [
-        'config/',
-        'config/settings.js',
-        'config/environments/',
-        'config/environments/development.js',
-        'config/environments/production.js',
-      ];
-      let scaffoldPaths = scaffold.map(scaffold => {
+      let scaffoldPaths = targetFeature.scaffold.map(scaffold => {
         return path.join(env.testScaffoldRoot, scaffold);
       });
 
-      scaffoldMaker.make().then(function() {
+      project.setup().then(function() {
         env.isAllExists(scaffoldPaths).then(function(allExists) {
           allExists ? done() : done(new Error('copy scaffold faild'));
         });
@@ -36,14 +28,14 @@ describe('settings feature', function() {
     });
 
     afterEach(function() {
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
+      project.getFeature('base').scaffold.forEach(scaffold => {
+        require('rimraf').sync(path.join(env.testScaffoldRoot, scaffold));
+      });
     });
 
   });
 
-  describe('#enhance', function() {
-    let app;
+  describe('#run', function() {
     beforeEach(function() {
       app = require(env.koa800Root)(env.testAppRoot);
     });
@@ -63,7 +55,7 @@ describe('settings feature', function() {
 
     it('config/environments/{app.env} should be third priority when production', function() {
       app.env = 'production';
-      require('../../../lib/required_features/settings').enhance(app); // 需要重新装载
+      require('../../../lib/required_features/settings').run(app); // 需要重新装载
       expect(app.settings.testkey3).to.equal('testkey3 in config/environments/production.js');
     });
 

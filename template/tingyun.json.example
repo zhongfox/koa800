@@ -1,7 +1,7 @@
 {
   "agent_log_level": "info",
   "app_name": [
-    "${this.require('path').basename(this.appRoot)}"
+    "${this.require('path').basename(this.root)}"
   ],
   "licenseKey": ""
 }

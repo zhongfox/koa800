@@ -1,0 +1,8 @@
+#!/bin/sh
+
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+RM_NUMBER=`echo $BRANCH | grep -o -e 'rm[0-9]*' || echo $BRANCH`
+
+echo -n "[$RM_NUMBER] " > "$1.msg"
+cat "$1" >> "$1.msg"
+cat "$1.msg" > "$1"

@@ -4,10 +4,12 @@
 
 let koa800 = function(root) {
   let app = require('koa')();
-  let Feature = require('./lib/feature');
-
   app.root = root || require('path').dirname(module.parent.filename);
-  Feature.enhanceApp(app);
+
+  let Project = require('./lib/project');
+  let project = new Project(app.root);
+
+  project.run(app);
 
   return app;
 };

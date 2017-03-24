@@ -6,31 +6,26 @@ let env = require('../../env');
 let path = require('path');
 let fakeGitHooksDir = 'dotgit/hooks';
 
+let project;
+let targetFeature;
+
 describe('eslint feature', function() {
-  beforeEach(function() {
-    env.Feature.features = null; // 重新加载
-    env.Feature.optional = {eslint: true};
+  before(function() {
+    sinon.stub(env.Project.prototype, 'getKoa800Config').returns({eslint: true});
+  });
+  after(function() {
+    env.Project.prototype.getKoa800Config.restore();
   });
 
-  describe('make_scaffold ', function() {
-    let scaffoldMaker;
+  describe('#setup', function() {
     beforeEach(function() {
-      scaffoldMaker = new env.ScaffoldMaker(env.testScaffoldRoot);
-
-      // only for update
-      let eslintFeature = require(path.join(env.koa800Root, 'lib/optional_features/eslint.js'));
-      sinon.stub(scaffoldMaker, 'getUpdate').returns({eslint: eslintFeature.update(env.testScaffoldRoot)});
+      project = new env.Project(env.testScaffoldRoot);
+      targetFeature = project.getFeature('eslint'); //TODO
       sinon.stub(env.Feature, 'gitHooksDir').returns(fakeGitHooksDir);
     });
 
-    it('should contain devDependencies eslint', function() {
-      let packageJson = scaffoldMaker.getPackageJson();
-      expect(packageJson.devDependencies).to.have.property('eslint');
-      // TODO
-    });
-
     it('.git/hooks/pre-commit should symbol link to bin/pre-commit', function(done) {
-      scaffoldMaker.make().then(function() {
+      project.setup().then(function() {
         require('fs').readlink(path.join(env.testScaffoldRoot, `${fakeGitHooksDir}/pre-commit`), function(err, target) {
           if (err) return done(err);
           expect(target).to.equal(path.join(env.koa800Root, 'bin/pre-commit'));
@@ -39,11 +34,16 @@ describe('eslint feature', function() {
       });
     });
 
+    it('should contain devDependencies eslint', function() {
+      let packageJson = project.scaffoldGenerator.getPackageJson();
+      expect(packageJson.devDependencies).to.have.property('eslint');
+    });
+
     afterEach(function() { // TODO
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
-      require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
+      project.getFeature('base').scaffold.forEach(scaffold => {
+        require('rimraf').sync(path.join(env.testScaffoldRoot, scaffold));
+      });
       require('rimraf').sync(path.join(env.testScaffoldRoot, `${fakeGitHooksDir}/pre-commit`));
-      scaffoldMaker.getUpdate.restore();
       env.Feature.gitHooksDir.restore();
     });
   });
