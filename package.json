@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --recursive",
-    "cov": "istanbul cover _mocha -- recursive"
+    "cover": "./node_modules/.bin/istanbul cover _mocha -- recursive"
   },
   "repository": {
     "type": "git",
@@ -36,16 +36,16 @@
   "homepage": "https://github.com/zhongfox/koa800#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "co": "^4.6.0",
+    "co-fs": "^1.2.0",
+    "co-memcached": "^1.0.1",
+    "co-redis": "^2.1.0",
+    "ioredis": "^1.15.1",
+    "istanbul": "^0.4.5",
+    "koa-safe-jsonp": "^0.3.1",
     "mocha": "^3.2.0",
     "rimraf": "^2.6.1",
     "sinon": "^2.0.0",
-
-    "koa-safe-jsonp": "^0.3.1",
-    "co": "^4.6.0",
-    "co-fs": "^1.2.0",
-    "co-redis": "^2.1.0",
-    "co-memcached": "^1.0.1",
-    "ioredis": "^1.15.1",
     "tingyun": "1.4.1"
   }
 }
