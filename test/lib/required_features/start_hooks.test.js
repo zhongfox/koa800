@@ -3,7 +3,7 @@
 let chai = require('chai');
 let sinon = require('sinon');
 let expect = chai.expect;
-let env = require('../../env');
+let helper = require('../../test_helper');
 
 let app;
 // let project;
@@ -12,7 +12,7 @@ let app;
 describe('start_hooks feature', function() {
   describe('#run', function() {
     beforeEach(function() {
-      app = require(env.koa800Root)(env.testAppRoot);
+      app = require(helper.koa800Root)(helper.testAppRoot);
     });
 
     describe('app.beforeStart', function() {

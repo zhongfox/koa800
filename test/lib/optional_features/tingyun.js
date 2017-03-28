@@ -1,10 +1,10 @@
 'use strict';
 
 let expect = require('chai').expect;
-let env = require('../../env');
+let helper = require('../../test_helper');
 let sinon = require('sinon');
 let path = require('path');
-let tingyunConfigFile = path.join(env.testScaffoldRoot, 'tingyun.json.example');
+let tingyunConfigFile = path.join(helper.testScaffoldRoot, 'tingyun.json.example');
 
 let project;
 let app;
@@ -12,20 +12,24 @@ let app;
 
 describe('tingyun feature', function() {
   before(function() {
-    sinon.stub(env.Project.prototype, 'getKoa800Config').returns({tingyun: true});
+    sinon.stub(helper.Project.prototype, 'getKoa800Config').returns({tingyun: true});
   });
   after(function() {
-    env.Project.prototype.getKoa800Config.restore();
+    helper.Project.prototype.getKoa800Config.restore();
   });
 
   describe('#setup', function() {
+    let packageJsonPath = path.join(helper.testScaffoldRoot, 'package.json');
     beforeEach(function() {
-      project = new env.Project(env.testScaffoldRoot);
+      project = new helper.Project(helper.testScaffoldRoot);
     });
 
-    it('packageJson should contain dependencies tingyun', function() {
-      let packageJson = project.scaffoldGenerator.getPackageJson();
-      expect(packageJson.dependencies).to.have.property('tingyun');
+    it('packageJson should contain dependencies tingyun', function(done) {
+      project.setup().then(function() {
+        let packageJson = require(packageJsonPath);
+        expect(packageJson.dependencies).to.have.property('tingyun');
+        done();
+      });
     });
 
     it('should copy scaffold and set default app_name', function(done) {
@@ -41,22 +45,23 @@ describe('tingyun feature', function() {
 
     afterEach(function() { // TODO
       project.getFeature('base').scaffold.forEach(scaffold => {
-        require('rimraf').sync(path.join(env.testScaffoldRoot, scaffold));
+        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
       });
       require('rimraf').sync(tingyunConfigFile);
+      helper.restorePackage();
     });
   });
 
   describe('#run', function() {
     let tingyun;
     before(function() {
-      process.env.TINGYUN_HOME = env.testAppRoot;
+      process.env.TINGYUN_HOME = helper.testAppRoot;
       tingyun = require('tingyun');
       sinon.spy(tingyun, 'noticeError');
       sinon.spy(tingyun, 'setWebActionName');
     });
     beforeEach(function() {
-      app = require(env.koa800Root)(env.testAppRoot);
+      app = require(helper.koa800Root)(helper.testAppRoot);
     });
 
     it('app.monitor.noticeError should call tingyun.noticeError', function() {

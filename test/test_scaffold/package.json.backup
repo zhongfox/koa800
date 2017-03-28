@@ -1,0 +1,9 @@
+{
+  "name": "test_scaffold",
+  "version": "1.0.0",
+  "description": "scaffold for testing koa800",
+  "dependencies": {
+    "koa800": "^1.0.0"
+  },
+  "license": "MIT"
+}

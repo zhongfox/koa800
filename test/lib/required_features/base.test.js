@@ -1,8 +1,8 @@
 'use strict';
 
-require('chai').should();
+let expect = require('chai').expect;
 let path = require('path');
-let env = require('../../env');
+let helper = require('../../test_helper');
 
 let project;
 let app;
@@ -11,48 +11,57 @@ let targetFeature;
 describe('base feature', function() {
   describe('setup', function() {
     beforeEach(function() {
-      project = new env.Project(env.testScaffoldRoot);
+      project = new helper.Project(helper.testScaffoldRoot);
       targetFeature = project.getFeature('base');
     });
 
     it('should copy scaffold', function(done) {
       let scaffoldPaths = targetFeature.scaffold.map(scaffold => {
-        return path.join(env.testScaffoldRoot, scaffold);
+        return path.join(helper.testScaffoldRoot, scaffold);
       });
 
       project.setup().then(function() {
-        env.isAllExists(scaffoldPaths).then(function(allExists) {
+        helper.isAllExists(scaffoldPaths).then(function(allExists) {
           allExists ? done() : done(new Error('copy scaffold faild'));
         });
       });
     });
 
+    it('should contain scripts start and c', function(done) {
+      project.setup().then(function() {
+        let packageJsonPath = path.join(helper.testScaffoldRoot, 'package.json');
+        let packageJson = require(packageJsonPath);
+        expect(packageJson.scripts).to.have.property('start');
+        expect(packageJson.scripts).to.have.property('c'); // TODO 异常不好查
+        done();
+      });
+    });
+
     afterEach(function() {
       targetFeature.scaffold.forEach(scaffold => {
-        require('rimraf').sync(path.join(env.testScaffoldRoot, scaffold));
+        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
       });
-      // require('rimraf').sync(path.join(env.testScaffoldRoot, 'app'));
-      // require('rimraf').sync(path.join(env.testScaffoldRoot, 'config'));
+      helper.restorePackage();
     });
   });
 
   describe('#run', function() {
     beforeEach(function() {
-      app = require(env.koa800Root)(env.testAppRoot);
+      app = require(helper.koa800Root)(helper.testAppRoot);
     });
 
     it('app.requireModule should return the same module as require', function() {
-      app.requireModule('koa800').should.equal(
+      expect(app.requireModule('koa800')).to.equal(
         require(path.join(__dirname, '../../test_app/koa800')));
     });
 
     it('app.isDevelopment() should return true by default', function() {
-      app.isDevelopment().should.equal(true);
+      expect(app.isDevelopment()).to.be.true;
     });
 
     it('app.isProduction() should return true when app.env=production', function() {
       app.env = 'production';
-      app.isProduction().should.equal(true);
+      expect(app.isProduction()).to.be.true;
     });
   });
 });

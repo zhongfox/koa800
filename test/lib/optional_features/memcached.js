@@ -2,7 +2,8 @@
 
 let expect = require('chai').expect;
 let sinon = require('sinon');
-let env = require('../../env');
+let helper = require('../../test_helper');
+let path = require('path');
 
 let project;
 let app;
@@ -10,26 +11,37 @@ let app;
 
 describe('memcached feature', function() {
   before(function() {
-    sinon.stub(env.Project.prototype, 'getKoa800Config').returns({memcached: true});
+    sinon.stub(helper.Project.prototype, 'getKoa800Config').returns({memcached: true});
   });
   after(function() {
-    env.Project.prototype.getKoa800Config.restore();
+    helper.Project.prototype.getKoa800Config.restore();
   });
 
   describe('#setup ', function() {
+    let packageJsonPath = path.join(helper.testScaffoldRoot, 'package.json');
     beforeEach(function() {
-      project = new env.Project(env.testScaffoldRoot);
+      project = new helper.Project(helper.testScaffoldRoot);
     });
 
-    it('should contain dependencies co-memcache', function() {
-      let packageJson = project.scaffoldGenerator.getPackageJson();
-      expect(packageJson.dependencies).to.have.property('co-memcached');
+    it('should contain dependencies co-memcache', function(done) {
+      project.setup().then(function() {
+        let packageJson = require(packageJsonPath);
+        expect(packageJson.dependencies).to.have.property('co-memcached');
+        done();
+      });
+    });
+
+    afterEach(function() {
+      project.getFeature('base').scaffold.forEach(scaffold => {
+        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
+      });
+      helper.restorePackage();
     });
   });
 
   describe('#run', function() {
     beforeEach(function() {
-      app = require(env.koa800Root)(env.testAppRoot);
+      app = require(helper.koa800Root)(helper.testAppRoot);
     });
 
     it('should create memcached client for app', function() {
