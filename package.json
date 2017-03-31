@@ -1,8 +1,8 @@
 {
   "name": "koa800",
   "bin": {
-    "koa800": "./bin/console.js",
-    "make_scaffold": "./bin/make_scaffold.js"
+    "c": "./bin/console.js",
+    "setup": "./bin/setup.js"
   },
   "version": "1.0.0",
   "description": "configurable koa wrapper",
@@ -22,6 +22,8 @@
   ],
   "author": "zhongfox",
   "dependencies": {
+    "co": "^4.6.0",
+    "co-fs": "^1.2.0",
     "koa": "^1.1.2",
     "koa-body": "^1.4.0",
     "koa-favicon": "^1.2.0",
@@ -37,11 +39,10 @@
   "homepage": "https://github.com/zhongfox/koa800#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "co": "^4.6.0",
-    "co-fs": "^1.2.0",
     "co-memcached": "^1.0.1",
     "co-redis": "^2.1.0",
     "coveralls": "^2.12.0",
+    "debug": "^2.2.0",
     "ioredis": "^1.15.1",
     "istanbul": "^0.4.5",
     "koa-safe-jsonp": "^0.3.1",

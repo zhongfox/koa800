@@ -38,5 +38,6 @@ jspm_packages
 
 # vim
 *.swo
+*.swn
 
 _copy

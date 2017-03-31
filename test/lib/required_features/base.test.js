@@ -51,8 +51,8 @@ describe('base feature', function() {
     });
 
     it('app.requireModule should return the same module as require', function() {
-      expect(app.requireModule('koa800')).to.equal(
-        require(path.join(__dirname, '../../test_app/koa800')));
+      expect(app.requireModule('package')).to.equal(
+        require(path.join(__dirname, '../../test_app/package')));
     });
 
     it('app.isDevelopment() should return true by default', function() {
