@@ -32,5 +32,17 @@ helper.restorePackage = function() {
   fs.createReadStream(backupPackageJsonPath).pipe(fs.createWriteStream(packageJsonPath));
 };
 
+let moduleNames = ['co-memcached', 'co-redis', 'ioredis', 'koa-safe-jsonp', 'koa-sub-domain', 'tingyun'];
+let Module = require('module');
+let realResolve = Module._resolveFilename;
+Module._resolveFilename = function fakeResolve(request, parent) {
+  if (moduleNames.indexOf(request) >= 0) {
+    return realResolve(path.join(helper.koa800Root, `test/node_modules/${request}`), parent);
+    // return path.join(helper.koa800Root, `test/node_modules/${request}/index.js`);
+  }
+  return realResolve(request, parent);
+};
+
+
 
 module.exports = helper;

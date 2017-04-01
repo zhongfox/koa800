@@ -1,0 +1,14 @@
+{
+  "name": "koa800_test",
+  "version": "1.0.0",
+  "description": "koa800 test node_modules",
+  "author": "zhongfox",
+  "dependencies": {
+    "co-memcached": "^1.0.1",
+    "co-redis": "^2.1.0",
+    "ioredis": "^1.15.1",
+    "koa-safe-jsonp": "^0.3.1",
+    "koa-sub-domain": "^1.0.2",
+    "tingyun": "1.4.1"
+  }
+}
