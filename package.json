@@ -24,6 +24,7 @@
   "dependencies": {
     "co": "^4.6.0",
     "co-fs": "^1.2.0",
+    "colors": "^1.1.2",
     "koa": "^1.1.2",
     "koa-body": "^1.4.0",
     "koa-favicon": "^1.2.0",
