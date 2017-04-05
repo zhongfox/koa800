@@ -4,16 +4,16 @@
 let path = require('path');
 let fs = require('fs');
 let appRoot = process.cwd();
-let koa800ConfigPath = path.join(appRoot, 'koa800.js');
+let packageJsonPath = path.join(appRoot, 'package.json');
 
-// 检测是否有项目koa800配置
-if (!fs.existsSync(koa800ConfigPath)) {
-  console.error(`[KOA800|eslint|pre-commit] 缺乏koa800配置文件:${koa800ConfigPath}`);
+// 检测是否有项目package.json配置
+if (!fs.existsSync(packageJsonPath)) {
+  console.error(`[KOA800|eslint|pre-commit] 缺乏package.json: ${packageJsonPath}`);
   process.exit(1);
 }
 
 // eslint 配置
-const koa800Config = require(koa800ConfigPath);
+const koa800Config = require(packageJsonPath).koa800Config;
 let eslintConfig = koa800Config.eslint;
 if (!eslintConfig) {
   process.exit(0);

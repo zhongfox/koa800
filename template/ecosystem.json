@@ -1,0 +1,19 @@
+{
+  "apps" : [{
+    "name": "${this.projectName}",
+    "script": "./bin/www",
+    "node_args": "--harmony",
+    "instances": "2",
+    "exec_mode": "cluster_mode",
+    "merge_logs": true,
+    "error_file": "./logs/production_${this.projectName}_err.log",
+    "out_file": "./logs/production_${this.projectName}_out.log",
+    "max_memory_restart": "1024M",
+    "env": {
+      "NODE_ENV" : "production"
+    },
+    "env_production" : {
+      "NODE_ENV": "production"
+    }
+  }]
+}
