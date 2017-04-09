@@ -38,10 +38,7 @@ describe('base feature', function() {
     });
 
     afterEach(function() {
-      targetFeature.scaffold.forEach(scaffold => {
-        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
-      });
-      helper.restorePackage();
+      project.teardownRequiredFeatures();
     });
   });
 

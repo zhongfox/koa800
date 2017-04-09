@@ -32,11 +32,8 @@ describe('redis feature', function() {
       });
     });
 
-    afterEach(function() { // TODO
-      project.getFeature('base').scaffold.forEach(scaffold => {
-        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
-      });
-      helper.restorePackage();
+    afterEach(function() {
+      project.teardownRequiredFeatures();
     });
   });
 

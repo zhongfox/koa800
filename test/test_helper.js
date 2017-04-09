@@ -8,6 +8,18 @@ helper.testScaffoldRoot = path.join(__dirname, '../test/test_scaffold');
 helper.Project          = require(path.join(helper.koa800Root, 'lib/project'));
 helper.Feature          = require(path.join(helper.koa800Root, 'lib/feature'));
 
+
+helper.Project.prototype.teardownFeature = function(name) {
+  this.getFeature(name).scaffold.forEach(scaffold => {
+    require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
+  });
+};
+
+helper.Project.prototype.teardownRequiredFeatures = function() {
+  this.teardownFeature('base');
+  helper.restorePackage();
+};
+
 helper.isAllExists = function(fileList) {
   let allExists = true;
 
@@ -38,11 +50,8 @@ let realResolve = Module._resolveFilename;
 Module._resolveFilename = function fakeResolve(request, parent) {
   if (moduleNames.indexOf(request) >= 0) {
     return realResolve(path.join(helper.koa800Root, `test/node_modules/${request}`), parent);
-    // return path.join(helper.koa800Root, `test/node_modules/${request}/index.js`);
   }
   return realResolve(request, parent);
 };
-
-
 
 module.exports = helper;

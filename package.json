@@ -4,7 +4,7 @@
     "c": "./bin/console.js",
     "setup": "./bin/setup.js"
   },
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "configurable koa wrapper",
   "main": "index.js",
   "scripts": {
@@ -45,6 +45,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.3.0",
+    "proxyquire": "^1.7.11",
     "rimraf": "^2.6.1",
     "sinon": "^2.0.0"
   }

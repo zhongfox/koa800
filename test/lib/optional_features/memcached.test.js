@@ -32,10 +32,7 @@ describe('memcached feature', function() {
     });
 
     afterEach(function() {
-      project.getFeature('base').scaffold.forEach(scaffold => {
-        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
-      });
-      helper.restorePackage();
+      project.teardownRequiredFeatures();
     });
   });
 

@@ -5,10 +5,11 @@ let path = require('path');
 let fs = require('fs');
 let appRoot = process.cwd();
 let packageJsonPath = path.join(appRoot, 'package.json');
+require('colors');
 
 // 检测是否有项目package.json配置
 if (!fs.existsSync(packageJsonPath)) {
-  console.error(`[KOA800|eslint|pre-commit] 缺乏package.json: ${packageJsonPath}`);
+  console.error(`[KOA800|eslint|pre-commit] 缺乏package.json: ${packageJsonPath}`.red);
   process.exit(1);
 }
 
@@ -26,17 +27,17 @@ if (eslintConfig !== 'error' && eslintConfig !== 'warning') {
 // 检测eslint是否存在
 const eslintPath = path.join(appRoot, 'node_modules/.bin/eslint');
 if (!fs.existsSync(eslintPath)) {
-  console.log(`[KOA800|eslint|pre-commit] 项目未安装eslint`);
+  console.error(`[KOA800|eslint|pre-commit] 项目未安装eslint`.red);
   process.exit(1);
 }
 
-const exec = require('child_process').exec;
+// const exec = require('child_process').exec;
 const gitcmd = 'git diff --cached --name-only --diff-filter=ACM | grep -v "^test\|^node_modules\|^public/assets\|^app/assets" | grep ".js$"';
 
 require('child_process').exec(gitcmd, (error, stdout, stderr) => {
   // 如果没有结果, grep的错误码会是1, 因此用error判断不准确, 用stderr判断
   if (stderr) { // 比如没有安装git
-    console.error(`[KOA800|eslint|pre-commit] git error: ${stderr}`);
+    console.error(`[KOA800|eslint|pre-commit] git error: ${stderr}`.red);
     process.exit(0);
   }
 
@@ -45,14 +46,15 @@ require('child_process').exec(gitcmd, (error, stdout, stderr) => {
 
   let changedFiles = stdout.split(/\s+/);
 
-  console.log('执行 eslint ...');
+  console.log('[KOA800|eslint|pre-commit] 执行 eslint ...'.blue);
   require('child_process').execFile(eslintPath, changedFiles, (error, stdout, stderr) => {
-    console.log(stdout); // lint 的错误会在stdout中
     if (error) { // lint 有错时, 会有error
-      console.error(`[KOA800|eslint|pre-commit] eslint error: ${error}`);
-      console.error(stderr); // lint 的错误不会在stderr中
+      console.log(stdout.red); // lint 的错误会在stdout中
+      // console.error(`[KOA800|eslint|pre-commit] eslint error: ${error}`);
+      // console.error(stderr); // lint 的错误不会在stderr中
+      console.error('[KOA800|eslint|pre-commit] eslint 执行失败'.red);
       process.exit(eslintConfig === 'warning' ? 0 : 1);
     }
-    console.log('[KOA800|eslint|pre-commit] eslint 成功');
+    console.log('[KOA800|eslint|pre-commit] eslint 成功'.green);
   });
 });

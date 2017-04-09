@@ -45,20 +45,48 @@ describe('jsonp feature', function() {
     });
 
     afterEach(function() {
-      project.getFeature('base').scaffold.forEach(scaffold => {
-        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
-      });
-      helper.restorePackage();
+      project.teardownRequiredFeatures();
     });
   });
 
   describe('#run', function() {
+    let jsonpSpy;
     beforeEach(function() {
-      app = require(helper.koa800Root)(helper.testAppRoot);
+      let proxyquire =  require('proxyquire');
+      jsonpSpy = sinon.spy();
+      let jsonpLib = path.join(helper.koa800Root, 'lib/optional_features/jsonp.js');
+      targetFeature = proxyquire(jsonpLib, {'koa-safe-jsonp': jsonpSpy});
+
+      require.cache[jsonpLib] = {
+        id: jsonpLib,
+        filename: jsonpLib,
+        loaded: true,
+        exports: targetFeature
+      };
     });
+
     it('expect app.controllers has action filters.checkReferer', function() {
+      app = require(helper.koa800Root)(helper.testAppRoot);
       expect(app.controllers).to.have.property('filters');
       expect(app.controllers.filters).to.have.property('checkReferer');
+    });
+
+    it('expect koa-safe-jsonp to be called with app', function() {
+      app = require(helper.koa800Root)(helper.testAppRoot);
+      expect(jsonpSpy.calledWithExactly(app)).to.be.true;
+    });
+
+    it('expect koa-safe-jsonp to be called with app and config', function() {
+      let config = {
+        callback: '_callback',
+        limit: 50
+      };
+
+      helper.Project.prototype.getKoa800Config.restore();
+      sinon.stub(helper.Project.prototype, 'getKoa800Config').returns({'jsonp': config});
+
+      app = require(helper.koa800Root)(helper.testAppRoot);
+      expect(jsonpSpy.calledWithExactly(app, config)).to.be.true;
     });
   });
 });

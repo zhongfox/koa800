@@ -44,11 +44,8 @@ describe('eslint feature', function() {
     });
 
     afterEach(function() {
-      project.getFeature('base').scaffold.forEach(scaffold => {
-        require('rimraf').sync(path.join(helper.testScaffoldRoot, scaffold));
-      });
+      project.teardownRequiredFeatures();
       require('rimraf').sync(path.join(helper.testScaffoldRoot, `${fakeGitHooksDir}/pre-commit`));
-      helper.restorePackage();
     });
   });
 });
