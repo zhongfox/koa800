@@ -212,7 +212,7 @@ feature base 按照约定创建了项目基本的结构, 同时提供了一些�
 * `npm run setup`: 按照当前配置的koa800Config更新项目脚手架
 * `npm run c`: 提供了koa800 console功能, 方便调试
 
-![console](//zhongfox.github.io/assets/images/koa800/console.gif)
+![console](https://zhongfox.github.io/assets/images/koa800/console.gif)
 
 [console 演示](https://asciinema.org/a/5byh1eu1wvctx0bz6t4z2u7az)
 
@@ -226,7 +226,7 @@ feature base 按照约定创建了项目基本的结构, 同时提供了一些�
 
 在 pre-commit 执行eslint检测到代码错误时, 可以配置要求阻止当前commit(默认), 也可以配置仅作为警告输出, commit仍然成功.
 
-![eslint](//zhongfox.github.io/assets/images/koa800/eslint.gif)
+![eslint](https://zhongfox.github.io/assets/images/koa800/eslint.gif)
 
 [eslint 演示](https://asciinema.org/a/a2vgtj99ne2m03zczvu1vpsj4)
 
@@ -247,7 +247,7 @@ eslint 支持的配置项:
 
 当在koa800中开启prepare_commit_msg选项后, 每次用户commit代码, 会自动把当前分支名信息记录到commit message中.
 
-![prepare_commit_msg](//zhongfox.github.io/assets/images/koa800/prepare_commit_msg.gif)
+![prepare_commit_msg](https://zhongfox.github.io/assets/images/koa800/prepare_commit_msg.gif)
 
 [prepare_commit_msg 演示](https://asciinema.org/a/1mfun5dcx6jr0jub1l7lzfd7b)
 
