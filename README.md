@@ -39,7 +39,7 @@ koa800提供了2个功能:
 1. Scaffold Generator: 创建、更新项目脚手架, 可配置需要特性. 发生在执行setup脚本时.
 2. Runtime Koa Wrapper: 统一管理项目中间件, 可配置需要特性. 发生在项目运行时.
 
-Scaffold Generator和Koa Wrapper都是通过[Feature](TODO)进行管理.
+Scaffold Generator和Koa Wrapper都是通过[Feature](https://github.com/zhongfox/koa800#5-feature)进行管理.
 
 ---
 
