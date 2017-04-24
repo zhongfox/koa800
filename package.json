@@ -4,8 +4,8 @@
     "c": "./bin/console.js",
     "setup": "./bin/setup.js"
   },
-  "version": "0.0.3",
-  "description": "configurable koa wrapper",
+  "version": "0.0.4",
+  "description": "configurable koa wrapper and scaffold generator",
   "main": "index.js",
   "scripts": {
     "test": "cd test && npm install && ../node_modules/.bin/mocha --recursive lib",
@@ -18,7 +18,8 @@
   },
   "keywords": [
     "koa",
-    "wrapper"
+    "scaffold generator",
+    "middleware wrapper"
   ],
   "author": "zhongfox",
   "dependencies": {
