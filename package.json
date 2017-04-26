@@ -4,7 +4,7 @@
     "c": "./bin/console.js",
     "setup": "./bin/setup.js"
   },
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "configurable koa wrapper and scaffold generator",
   "main": "index.js",
   "scripts": {
