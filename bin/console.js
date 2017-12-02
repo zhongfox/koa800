@@ -8,4 +8,3 @@ require(startModule);
 
 let repl = require('repl').start('koa800> ');
 require('repl.history')(repl, `${process.env.HOME}/.${projectName}_history`);
-
